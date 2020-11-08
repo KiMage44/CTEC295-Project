@@ -1,6 +1,18 @@
-#SignInDrive{
-
+#googleAccessMenu {
+  width: 90vw;
+  height: 5vh;
+  margin: auto;
+  padding-left: 5vw;
+  padding-right: 5vw;
 }
-#SignOutDrive{
-  
+#googleAccessMenu li {
+  float: right;
+  display: block;
+}
+#drawingCanvas {
+  width: 90vw;
+  height: 50vh;
+  border-style: solid;
+  margin: auto;
+  margin: 20px 5vw 0 5vw;
 }

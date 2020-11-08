@@ -1,85 +1,91 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script type='text/javascript' src="googleAPI.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!------BootStrap JS and CSS Imports----->
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet"
-        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <!-- jQuery library -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <!-- Latest compiled JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-        <!-----This is for our own custom CSS and JS------>
-        <link rel="stylesheet" type-"text/css" href="Our_Css_Folder/OurCSS.css">
-        <script src='Our_JS_Folder/OurScripts.js'></script>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script type='text/javascript' src="googleAPI.js"></script>
+    <script src="main.js"></script>
+    <!------BootStrap JS and CSS Imports----->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="main.css">
   </head>
   <body>
     <nav class="navbar navbar-default navbar-fixed-top">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse"
-                        data-target="#main-navbar">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a href="#" class="navbar-brand">OurDrawingApp</a>
-                    </div>
-                    <div class="collapse navbar-collapse" id="main-navbar">
-                        <ul class="nav navbar-nav">
-                            <li>Pencils</li>
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse"
+            data-target="#main-navbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="#" class="navbar-brand">Draw.Net</a>
+        </div>
+        <div class="collapse navbar-collapse" id="main-navbar">
+            <ul class="nav navbar-nav">
+                <li>Pencils</li>
 
-                            <!-----You can change the buttons to onclick buttons
-                                and just the Method name to what needs to be displayed
-                                for more buttons just copy and paste and change as needed
-                                ------->
+                <!-----You can change the buttons to onclick buttons
+                    and just the Method name to what needs to be displayed
+                    for more buttons just copy and paste and change as needed
+                    ------->
 
-                            <li><button>Method 1</button></li>
-                            <li><button>Method 2</button></li>
-                            <li><button>Method 3</button></li>
-                            <li>Pens</li>
-                            <li><button>Method 1</button></li>
-                            <li><button>Method 2</button></li>
-                            <li><button>Method 3</button></li>
-                            <li>Shapes</li>
-                            <li><button>Method 1</button></li>
-                            <li><button>Method 2</button></li>
-                            <li><button>Method 3</button></li>
-                            <li>Color</li>
-                            <li><button>Color 1</button></li>
-                            <li><button>Color 2</button></li>
-                            <li><button>Color 3</button></li>
-                            <li><button>Color 4</button></li>
-                            <li><button>Color 5</button></li>
-                            <li><button>Color 6</button></li>
-                            <li><button>Color 7</button></li>
-                            <li><button>Color 8 </button></li>
-                            <li>Save</li>
-                            <li><button>Color </button></li>
-                            <li>Options</li>
-                            <li><button>Option 1 </button></li>
-                            <li><button>Option 2 </button></li>
-                            <li>Clear</li>
-                            <li><button>Clear</button></li>
-                        </ul>
-                    </div>
-                    </div>
+                <li><button>Method 1</button></li>
+                <li><button>Method 2</button></li>
+                <li><button>Method 3</button></li>
+                <li>Pens</li>
+                <li><button>Method 1</button></li>
+                <li><button>Method 2</button></li>
+                <li><button>Method 3</button></li>
+                <li>Shapes</li>
+                <li><button>Method 1</button></li>
+                <li><button>Method 2</button></li>
+                <li><button>Method 3</button></li>
+                <li>Color</li>
+                <li><button>Color 1</button></li>
+                <li><button>Color 2</button></li>
+                <li><button>Color 3</button></li>
+                <li><button>Color 4</button></li>
+                <li><button>Color 5</button></li>
+                <li><button>Color 6</button></li>
+                <li><button>Color 7</button></li>
+                <li><button>Color 8 </button></li>
+                <li>Save</li>
+                <li><button>Color </button></li>
+                <li>Options</li>
+                <li><button>Option 1 </button></li>
+                <li><button>Option 2 </button></li>
+                <li>Clear</li>
+                <li><button>Clear</button></li>
+            </ul>
+        </div>
+      </div>
+
     <!--Add buttons to initiate auth sequence and sign out-->
-    <button id="signInDrive" onclick="handleAuthClick()">Authorize</button>
-    <button id="signInDrive" onclick="handleSignoutClick()">Sign Out</button>
-    <input type="file" id="fileInput" onclick="changeCurrentFile()">Open File</input>
-    <button id="uploadDrive" onclick="postFileToDrive()">Upload File to Drive</button>
+    <ul id="googleAccessMenu">
+      <li><button id="signInDrive" onclick="handleAuthClick()">Authorize</button></li>
+      <li><button id="signInDrive" onclick="handleSignoutClick()">Sign Out</button></li>
+      <li><input type="file" id="fileInput" onclick="changeCurrentFile()"></input></li>
+      <li><button id="uploadDrive" onclick="postFileToDrive()">Upload File to Drive</button></li>
+      <li><button id="IMGtoCanvas" onclick="loadImagetoCanvas()">loadImagetoCanvas</button></li>
+    </ul>
 
-    <p id="txt"></p>
+    <canvas id="drawingCanvas"></canvas>
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
     <script type="text/javascript">
-      initialContentSetup(this);
+      this.onload = function() {
+        initialContentSetup(this);
+        initiate(this);
+        console.log("initiate functions completed");
+      }
+
       var oops = '';
     </script>
   </body>
