@@ -7,10 +7,17 @@
     <!--Add buttons to initiate auth sequence and sign out-->
     <button id="signInDrive" onclick="handleAuthClick()">Authorize</button>
     <button id="signInDrive" onclick="handleSignoutClick()">Sign Out</button>
+    <input type="file" id="fileInput" onclick="changeCurrentFile()">Open File</input>
+    <button id="uploadDrive" onclick="postFileToDrive()">Upload File to Drive</button>
 
+    <p id="txt"></p>
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <script type="text/javascript">
+      initialContentSetup(this);
+      var oops = '';
     </script>
   </body>
 </html>
