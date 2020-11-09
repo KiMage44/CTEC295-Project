@@ -59,7 +59,7 @@
                 <li><button>Option 1 </button></li>
                 <li><button>Option 2 </button></li>
                 <li>Clear</li>
-                <li><button>Clear</button></li>
+                <li><button onclick="wipeCanvas()">Clear</button></li>
             </ul>
         </div>
       </div>
@@ -68,12 +68,12 @@
     <ul id="googleAccessMenu">
       <li><button id="signInDrive" onclick="handleAuthClick()">Authorize</button></li>
       <li><button id="signInDrive" onclick="handleSignoutClick()">Sign Out</button></li>
-      <li><input type="file" id="fileInput" onclick="changeCurrentFile()"></input></li>
-      <li><button id="uploadDrive" onclick="postFileToDrive()">Upload File to Drive</button></li>
+      <li><input type="file" id="fileInput"></input></li>
+      <li><button id="uploadDrive" onclick="saveCanvastoDrive()">Upload File to Drive</button></li>
       <li><button id="IMGtoCanvas" onclick="loadImagetoCanvas()">loadImagetoCanvas</button></li>
     </ul>
 
-    <canvas id="drawingCanvas"></canvas>
+    <canvas id="drawingCanvas" width="800" height="600"></canvas>
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
@@ -84,8 +84,11 @@
         initiate(this);
         console.log("initiate functions completed");
       }
-
-      var oops = '';
+      async function saveCanvastoDrive(){
+        var image = Window.canvas.toDataURL("image/png");
+        let imageFile = await (fetch(image).then(function(res){return res.arrayBuffer();}).then(function(buf){Window.currentFile = new File([buf],"test.png",{type:"image/png"})}));
+        postFileToDrive();
+      }
     </script>
   </body>
 </html>

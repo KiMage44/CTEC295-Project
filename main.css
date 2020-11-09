@@ -10,9 +10,9 @@
   display: block;
 }
 #drawingCanvas {
-  width: 90vw;
-  height: 50vh;
+  width: 80vw;
+  height: 70vh;
+  float: ;
   border-style: solid;
-  margin: auto;
-  margin: 20px 5vw 0 5vw;
+  margin: 20px 10vw 20px 10vw;
 }
