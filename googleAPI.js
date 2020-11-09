@@ -1,5 +1,5 @@
-var CLIENT_ID = '1082519719763-p93jidt452epb2u7gvathglruul0f744.apps.googleusercontent.com';
-var API_KEY = 'AIzaSyDYwGr98qKbm9-NbSEFkyXsHLMW-XECHMc';
+var CLIENT_ID = '';
+var API_KEY = '';
 var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 var SCOPES = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install https://www.googleapis.com/auth/drive';
 var Window = "";
@@ -35,7 +35,6 @@ function initialContentSetup(window){
       reader.readAsDataURL(file);
     });
 };
-
 function postFileToDrive(){
   var file = Window.currentFile;
   var url = new URL("https://www.googleapis.com/upload/drive/v3/files");

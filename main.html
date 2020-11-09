@@ -8,7 +8,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script type='text/javascript' src="googleAPI.js"></script>
     <script src="main.js"></script>
-    <!------BootStrap JS and CSS Imports----->
+    <!--BootStrap JS and CSS Imports----->
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="main.css">
@@ -42,18 +42,17 @@
                 <li><button>Method 2</button></li>
                 <li><button>Method 3</button></li>
                 <li>Shapes</li>
-                <li><button>Method 1</button></li>
-                <li><button>Method 2</button></li>
-                <li><button>Method 3</button></li>
+                <li><button onclick="drawShape('circle',20,20,5,5)">Circle</button></li>
+                <li><button onclick="drawShape('rectangle',0,0,20,20)">Rectangle</button></li>
                 <li>Color</li>
-                <li><button>Color 1</button></li>
-                <li><button>Color 2</button></li>
-                <li><button>Color 3</button></li>
-                <li><button>Color 4</button></li>
-                <li><button>Color 5</button></li>
-                <li><button>Color 6</button></li>
-                <li><button>Color 7</button></li>
-                <li><button>Color 8 </button></li>
+                <li><button id="blue" onclick="setColor('#0000ff')";>Blue</button></li>
+                <li><button id="green" onclick="setColor('#008000')">Green</button></li>
+                <li><button id="purple" onclick="setColor('#800080')">Purple</button></li>
+                <li><button id="orange" onclick="setColor('#FFA500')">Orange</button></li>
+                <li><button id="yellow" onclick="setColor('#FFFF00')">Yellow</button></li>
+                <li><button id="red" onclick="setColor('#FF0000')">Red</button></li>
+                <li><button id="black" onclick="setColor('#000000')">Black</button></li>
+                <li><button id="white" onclick="setColor('#ffffff')">White</button></li>
                 <li>Save</li>
                 <li><button>Color </button></li>
                 <li>Options</li>
