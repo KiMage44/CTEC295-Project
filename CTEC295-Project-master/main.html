@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script type='text/javascript' src="googleAPI.js"></script>
+    <script src="main.js"></script>
+    <!--BootStrap JS and CSS Imports----->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="main.css">
+  </head>
+  <body>
+
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#" data-toggle="tooltip" title="Welcome to our project!">DRAW.NET</a>
+        </div>
+        <ul class="nav navbar-nav">
+  
+  
+           <!---This drowndown menu is for Pencil options--->
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" data-toggle="tooltip" title="These are your pencil options!">Pencils
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <!-----Add buttons as needed in this list section keep same format-->
+              <li><a href="#"><button onclick="drawShape('circle',20,20,5,5)">Circle</button></a></li>
+              <li><a href="#"><button onclick="drawShape('circle',20,20,5,5)">Circle</button></a></li>
+              <li><a href="#"><button onclick="drawShape('circle',20,20,5,5)">Circle</button></a></li>
+              <li><a href="#"><button onclick="drawShape('circle',20,20,5,5)">Circle</button></a></li>
+            </ul>
+          </li>
+  
+          
+           <!---This drowndown menu is for Pen options--->
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#"data-toggle="tooltip" title="These are your pen options!">Pens
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <!-----Add buttons as needed in this list section keep same format-->
+              <li><a href="#"><button onclick="drawShape('circle',20,20,5,5)">Circle</button></a></li>
+            </ul>
+          </li>
+  
+  
+          <!---This drowndown menu is for Shape options--->
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#"data-toggle="tooltip" title="These are your shape options!">Shapes
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <!-----Add buttons as needed in this list section keep same format-->
+              <li><a href="#"><button onclick="drawShape('circle',20,20,5,5)">Circle</button></a></li>
+              <li><a href="#"><button onclick="drawShape('rectangle',0,0,20,20)">Rectangle</button></a></li>
+            </ul>
+          </li>
+  
+  
+          <!---This drowndown menu is for color options--->
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#"data-toggle="tooltip" title="These are your color options!">Colors
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <!-----Add buttons as needed in this list section keep same format-->
+              <li><a href="#"><button onclick="drawShape('circle',20,20,5,5)">Circle</button></a></li>
+              <li><a href="#"><button id="blue" onclick="setColor('#0000ff')">Blue</button></a></li>
+              <li><a href="#"><button id="green" onclick="setColor('#008000')">Green</button></a></li>
+              <li><a href="#"><button id="purple" onclick="setColor('#800080')">Purple</button></a></li>
+              <li><a href="#"><button id="orange" onclick="setColor('#FFA500')">Orange</button></a></li>
+              <li><a href="#"><button id="yellow" onclick="setColor('#FFFF00')">Yellow</button></a></li>
+              <li><a href="#"><button id="red" onclick="setColor('#FF0000')">Red</button></a></li>
+              <li><a href="#"><button id="black" onclick="setColor('#000000')">Black</button></a></li>
+              <li><a href="#"><button id="white" onclick="setColor('#ffffff')">White</button></a></li>
+            </ul>
+          </li>
+  
+  
+          <!---This drowndown menu is for options--->
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#"data-toggle="tooltip" title="This is your options menu!">Options
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <!-----Add buttons as needed in this list section keep same format-->
+              <li><a href="#"><button onclick="drawShape('circle',20,20,5,5)">Circle</button></a></li>
+            </ul>
+          </li>
+  
+  
+          <!---This drowndown menu is for Save options--->
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" data-toggle="tooltip" title="This is your Save menu!">Save
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <!-----Add buttons as needed in this list section keep same format-->
+              <li><a href="#"><button onclick="drawShape('circle',20,20,5,5)">Circle</button></a></li>
+            </ul>
+          </li>
+                
+          <!---This drowndown menu is for clearing options--->
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#"data-toggle="tooltip" title="This is your clearing option!" >Clear
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <!-----Add buttons as needed in this list section keep same format-->
+              <li><a href="#"><button onclick="wipeCanvas()">Clear</button></a></li>
+            </ul>
+          </li>
+  
+              <!---This drowndown menu is for google options--->
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" data-toggle="tooltip" title="These are your Drive options!"><span class="glyphicon glyphicon-user"></span> GoogleMenu
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <!-----Add buttons as needed in this list section keep same format-->
+              <li><a href="#"><button id="signInDrive" onclick="handleAuthClick()">Authorize</button></a></li>
+              <li><a href="#"><button id="signInDrive" onclick="handleSignoutClick()">Sign Out</button></a></li>
+              <li><a href="#"><input type="file" id="fileInput"></input></a></li>
+              <li><a href="#"><button id="uploadDrive" onclick="saveCanvastoDrive()">Upload File to Drive</button></a></li>
+              <li><a href="#"><button id="IMGtoCanvas" onclick="loadImagetoCanvas()">loadImagetoCanvas</button></a></li>
+            </ul>
+          </li>
+  
+  
+        </ul>
+      </div>
+    </nav>
+ 
+
+ 
+    <canvas id="drawingCanvas" width="800" height="600"></canvas>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <script type="text/javascript">
+      this.onload = function() {
+        initialContentSetup(this);
+        initiate(this);
+        console.log("initiate functions completed");
+      }
+      async function saveCanvastoDrive(){
+        var image = Window.canvas.toDataURL("image/png");
+        let imageFile = await (fetch(image).then(function(res){return res.arrayBuffer();}).then(function(buf){Window.currentFile = new File([buf],"test.png",{type:"image/png"})}));
+        postFileToDrive();
+      }
+    </script>
+  </body>
+</html>
