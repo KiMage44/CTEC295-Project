@@ -45,7 +45,7 @@
                 <li><button onclick="drawShape('circle',20,20,5,5)">Circle</button></li>
                 <li><button onclick="drawShape('rectangle',0,0,20,20)">Rectangle</button></li>
                 <li>Color</li>
-                <li><button id="blue" onclick="setColor('#0000ff')";>Blue</button></li>
+                <li><button id="blue" onclick="setColor('#0000ff')">Blue</button></li>
                 <li><button id="green" onclick="setColor('#008000')">Green</button></li>
                 <li><button id="purple" onclick="setColor('#800080')">Purple</button></li>
                 <li><button id="orange" onclick="setColor('#FFA500')">Orange</button></li>
@@ -73,7 +73,7 @@
       <li><button id="IMGtoCanvas" onclick="loadImagetoCanvas()">loadImagetoCanvas</button></li>
     </ul>
 
-    <canvas id="drawingCanvas" width="800" height="600"></canvas>
+    <canvas id="drawingCanvas"></canvas>
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
@@ -82,6 +82,8 @@
       this.onload = function() {
         initialContentSetup(this);
         initiate(this);
+        this.document.getElementById("drawingCanvas").width = this.innerWidth*0.8;
+        this.document.getElementById("drawingCanvas").height = this.innerHeight*0.8;
         console.log("initiate functions completed");
       }
       async function saveCanvastoDrive(){

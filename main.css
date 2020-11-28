@@ -11,8 +11,7 @@
 }
 #drawingCanvas {
   width: 80vw;
-  height: 70vh;
-  float: ;
+  height: 80vh;
   border-style: solid;
   margin: 20px 10vw 20px 10vw;
 }
