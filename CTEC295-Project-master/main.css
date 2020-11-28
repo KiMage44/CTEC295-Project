@@ -10,15 +10,13 @@
   display: block;
 }
 #drawingCanvas {
-  width: 180vh;
-  height: 70vh;
-  float: ;
   border-style: solid;
-  margin: 20px 10vw 20px 10vw;
+  margin: 0 10vw 0 10vw;
   background-color: white;
-  
+
 }
 body{
   background-color: skyblue;
-  
+  width: 100vw;
+  height:100vh;
 }

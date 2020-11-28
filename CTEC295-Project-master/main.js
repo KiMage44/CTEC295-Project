@@ -1,30 +1,25 @@
-var Window = "";
+var DefaultPen = {
+  shape: 'circle',
+  size: 2,
+  color: "#000000",
+};
+var SquarePen = {
+  shape: 'square',
+  size: 2,
+  color: "#000000",
+};
 function initiate(value){
-  Window = value;
+  var Window = value;
+  Window.drawingPen = DefaultPen;
   Window.canvas = Window.document.getElementById("drawingCanvas");
   Window.stylus = canvas.getContext("2d");
-  Window.stylus.fillStyle = "#000000";
-  Window.document.getElementById("drawingCanvas").addEventListener("click", function(e){registerClick(e);});
   Window.document.getElementById("drawingCanvas").addEventListener("mousemove", function(e){registerMouseMove(e);});
-  Window.document.getElementById("drawingCanvas").addEventListener("mousedown",function(e){registerMouseDown(e);});
-  Window.document.getElementById("drawingCanvas").addEventListener("mouseup",function(e){registerMouseUp(e);});
+  Window.document.getElementById("drawingCanvas").addEventListener("mousedown",function(e){Window.mouseDown = true;;});
+  Window.document.getElementById("drawingCanvas").addEventListener("mouseup",function(e){Window.mouseDown = false;;});
   Window.addEventListener("resize",function(e){resizeCanvas(e);});
 };
 function setColor(value){
-  Window.stylus.fillStyle = value;
-  console.log(Window.stylus.fillStyle);
-};
-function drawShape(type,x,y,width,height){
-  switch(type){
-    case "circle":
-      Window.stylus.beginPath();
-      Window.stylus.arc(x,y,width,0,2*Math.PI);
-      Window.stylus.fill();
-      break;
-    case "rectangle":
-      Window.stylus.fillRect(x,y,width,height);
-      break;
-    }
+  Window.drawingPen.color = value;
 };
 function loadImagetoCanvas(){
   Window.image = new Image();
@@ -43,29 +38,37 @@ function wipeCanvas(){
   Window.stylus.fillStyle = "#FFFFFF";
   drawShape('rectangle',0,0,Window.canvas.width,Window.canvas.height);
 }
-function registerClick(e){
-  console.log(e.clientX);
-  console.log(e.clientY);
-}
 function registerMouseMove(e){
   var drawPosX = e.clientX - Window.innerWidth*0.1;
-  var drawPosY = e.clientY - Window.innerHeight*0.12;
+  var drawPosY = e.clientY - Window.innerHeight*0.075;
   if(Window.mouseDown){
-    console.log("Draw X: "+ drawPosX);
-    console.log("Draw Y: "+ drawPosY);
-    drawShape('rectangle',drawPosX,drawPosY,2,2);
+    switch(Window.drawingPen.shape){
+      case "circle":
+        Window.stylus.fillStyle = Window.drawingPen.color;
+        Window.stylus.beginPath();
+        Window.stylus.arc(drawPosX,drawPosY,Window.drawingPen.size,0,2*Math.PI);
+        Window.stylus.fill();
+        break;
+      case "square":
+      console.log("square");
+        Window.stylus.fillStyle = Window.drawingPen.color;
+        Window.stylus.fillRect(x,y,width,height)
+      default:
+      console.log("broke");
+
+    }
   }
-}
-function registerMouseDown(e){
-  Window.mouseDown = true;
-  console.log("Mousedown = "+Window.mouseDown);
-}
-function registerMouseUp(e){
-  Window.mouseDown = false;
-  console.log("Mousedown = "+Window.mouseDown);
-}
-async function resizeCanvas(e){
-  console.log("Window resized, recreating canvas.");
+};
+function resizeCanvas(e){
   Window.document.getElementById("drawingCanvas").width = this.innerWidth*0.8;
   Window.document.getElementById("drawingCanvas").height = this.innerHeight*0.8;
+};
+function setPen(value){
+  console.log(value);
+  switch(value){
+    case "squarePen":
+      Window.drawingPen = SquarePen;
+    case "cirlcePen":
+      Window.drawingPen = DefaultPen;
+  }
 }
