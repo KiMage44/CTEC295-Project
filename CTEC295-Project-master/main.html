@@ -7,7 +7,6 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script type='text/javascript' src="googleAPI.js"></script>
-    <script src="main.js"></script>
     <!--BootStrap JS and CSS Imports----->
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -146,20 +145,12 @@
         </ul>
       </div>
     </nav>
+    <li><a href="#"><button id="signInDrive" onclick="undo()">Undo</button></a></li>
+    <li><a href="#"><button id="signInDrive" onclick="redo()">Redo</button></a></li>
     <canvas id="drawingCanvas"></canvas>
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad('this')"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
-    </script>
-    <script type="text/javascript">
-      this.onload = function() {
-        this.document.getElementById("drawingCanvas").width = this.innerWidth*0.8;
-        this.document.getElementById("drawingCanvas").height = this.innerHeight*0.8;
-      }
-      async function saveCanvas(){
-        var image = Window.canvas.toDataURL("image/png");
-        let imageFile = await (fetch(image).then(function(res){return res.arrayBuffer();}).then(function(buf){Window.currentFile = new File([buf],"test.png",{type:"image/png"})}));
-      }
     </script>
   </body>
   </html>

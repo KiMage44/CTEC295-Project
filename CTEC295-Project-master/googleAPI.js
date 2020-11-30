@@ -18,6 +18,10 @@ var SquarePen = {
   size: 2,
   color: "#000000",
 };
+var CanvasSnapshots = [];
+var drawingStatus = 0; //0= not drawing, 1 = drawing, 2= drawing has completed
+var isDrawing = 0;
+var undoLayer = CanvasSnapshots.length;
 
 //ALL JS METHODS IMPLEMENTED BY GOOGLE API
 function handleClientLoad(value) {
@@ -51,12 +55,16 @@ function WebPageContentSetup(){
   Window.canvas = Window.document.getElementById("drawingCanvas");
   Window.stylus = canvas.getContext("2d");
   Window.drawingPen = DefaultPen;
+  Window.canvas.width = Window.innerWidth*0.8;
+  Window.canvas.height = Window.innerHeight*0.8;
+  Window.mouseDown = false;
+  saveSnapshot();
 
   //Event Listeners for webpage
   Window.addEventListener("resize",function(e){resizeCanvas(e);});
   Window.document.getElementById("drawingCanvas").addEventListener("mousemove", function(e){registerMouseMove(e);});
-  Window.document.getElementById("drawingCanvas").addEventListener("mousedown",function(e){Window.mouseDown = true;;});
-  Window.document.getElementById("drawingCanvas").addEventListener("mouseup",function(e){Window.mouseDown = false;;});
+  Window.document.getElementById("drawingCanvas").addEventListener("mousedown",function(e){isDrawing = 1;});
+  Window.document.getElementById("drawingCanvas").addEventListener("mouseup",function(e){isDrawing = 0;});
   var fileSelect = Window.document.getElementById("fileInput").addEventListener("change", event => {
       var file = event.target.files[0];
       Window.currentFile = file;
@@ -108,14 +116,26 @@ function wipeCanvas(){
   Window.stylus.fillRect(0,0,Window.canvas.width,Window.canvas.height)
 }
 function registerMouseMove(e){
+
   var x = e.clientX - Window.innerWidth*0.1;
   var y = e.clientY - Window.innerHeight*0.075;
-  if(Window.mouseDown)
+  if(isDrawing == 1){
     draw(Window.drawingPen,x,y);
+    drawingStatus = 1;
+  }
+  if(drawingStatus == 1 && isDrawing == 0){
+    drawingStatus = 2;
+    saveSnapshot();
+  }
+  if(isDrawing == 0){
+    drawingStatus = 0;
+  }
 };
 function resizeCanvas(e){
-  Window.document.getElementById("drawingCanvas").width = this.innerWidth*0.8;
-  Window.document.getElementById("drawingCanvas").height = this.innerHeight*0.8;
+    Window.canvas.width = this.innerWidth*0.8;
+    Window.canvas.height = this.innerHeight*0.8;
+    console.log("loading last snapshot");
+    Window.currentFile = loadLatestSnapShot();
 };
 function setPen(value){
   console.log(value);
@@ -143,3 +163,42 @@ function draw(pen,x,y){
 
   }
 };
+function undo(){
+  if(undoLayer > 0)
+    undoLayer -= 1;
+  Window.currentFile = CanvasSnapshots[undoLayer];
+  loadImagetoCanvas();
+};
+function redo(){
+  if(undoLayer < CanvasSnapshots.length-1)
+    undoLayer += 1;
+  Window.currentFile = CanvasSnapshots[undoLayer];
+  loadImagetoCanvas();
+};
+async function saveSnapshot(){
+  console.log("Saving snapshot of canvas");
+  var image = Window.canvas.toDataURL("image/png");
+  let imageFile = await (fetch(image).then(function(res){return res.arrayBuffer();}).then(function(buf){CanvasSnapshots.push(new File([buf],"test.png",{type:"image/png"})); }));
+  console.log("snapshot saved");
+  if(CanvasSnapshots.length == 0)
+    undoLayer = 0;
+  else{
+    undoLayer = CanvasSnapshots.length-1;
+  }
+};
+async function saveCanvas(){
+  var image = Window.canvas.toDataURL("image/png");
+  let imageFile = await (fetch(image).then(function(res){return res.arrayBuffer();}).then(function(buf){Window.currentFile = new File([buf],"test.png",{type:"image/png"})}));
+};
+function loadLatestSnapShot(){
+  if(CanvasSnapshots.length == 0)
+    Window.currentFile = CanvasSnapshots[0];
+  else
+    Window.currentFile = CanvasSnapshots[CanvasSnapshots.length - 1];
+  if(undoLayer != (CanvasSnapshots.length -1)){
+    console.log("current Snapshot is less than latest Snapshot, loading current snapshot");
+    Window.currentFile = CanvasSnapshots[undoLayer];
+  }
+  loadImagetoCanvas();
+
+}
