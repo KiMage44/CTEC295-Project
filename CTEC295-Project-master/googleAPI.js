@@ -19,9 +19,10 @@ var SquarePen = {
   color: "#000000",
 };
 var CanvasSnapshots = [];
+var acceptedImageTypes = ["image/jpeg","image/gif","image/png"];
+var undoLayer = 0;
 var drawingStatus = 0; //0= not drawing, 1 = drawing, 2= drawing has completed
 var isDrawing = 0;
-var undoLayer = CanvasSnapshots.length;
 
 //ALL JS METHODS IMPLEMENTED BY GOOGLE API
 function handleClientLoad(value) {
@@ -67,64 +68,94 @@ function WebPageContentSetup(){
   Window.document.getElementById("drawingCanvas").addEventListener("mouseup",function(e){isDrawing = 0;});
   var fileSelect = Window.document.getElementById("fileInput").addEventListener("change", event => {
       var file = event.target.files[0];
-      Window.currentFile = file;
       var reader = new FileReader();
       reader.readAsDataURL(file);
+      if(checkFileType(file.type)){
+        console.log("fileType accepted, importing image now.");
+        loadImagetoCanvas(file);
+      }
+      else{
+        console.log("fileType "+file.type+" not accepted, import aborted.");
+      }
+
+
     });
     console.log("Webpage setup completed");
 };
 //ALL JS METHODS RELATING TO FILE/API INTERACTION
-function postFileToDrive(){
-  saveCanvas();
-  var file = Window.currentFile;
-  var url = new URL("https://www.googleapis.com/upload/drive/v3/files");
-  url.searchParams.append("uploadType","media");
-  var request = new Request(url, {
-    method: "POST",
-    headers: {'Content-Type':"image/png", 'Content-Length':file.size,
-    'Authorization':"Bearer "+googleUserAccount.wc.access_token},
-    body: file,
+async function postFileToDrive(){
+  var file = saveCanvastoFile().then(function(file){
+    console.log("loading file for upload:"+file);
+    var url = new URL("https://www.googleapis.com/upload/drive/v3/files");
+    url.searchParams.append("uploadType","media");
+    var request = new Request(url, {
+      method: "POST",
+      headers: {'Content-Type':"image/png", 'Content-Length':file.size,
+      'Authorization':"Bearer "+googleUserAccount.xc.access_token},
+      body: file,
+    });
+    fetchRequest(request);
   });
-  fetchRequest(request);
 };
 async function fetchRequest(request){
   let response = await fetch(request);
   if(response.status >=200 && response.status < 300) {return response;}
   else {return Promise.reject(new Error(response.statusText));}
 };
-
+function checkFileType(fileType){
+  var fileAccepted = false;
+  for(i=0; i<acceptedImageTypes.length; i++){
+    if(fileType == acceptedImageTypes[i])
+      fileAccepted = true;
+  }
+  return fileAccepted;
+};
 
 // ALL JS METHODS RELATING TO CANVAS AND DRAWING FUNCTIONS
 function setColor(value){
   Window.drawingPen.color = value;
 };
-function loadImagetoCanvas(){
-  Window.image = new Image();
-  Window.image.onload = function(){
-    Window.canvas.width = Window.image.width;
-    canvas.height = Window.image.height;
-    Window.stylus.drawImage(Window.image,0,0);
+function loadSnapshottoCanvas(passedImage){
+  image = new Image();
+  image.onload = function(){
+    Window.canvas.width = image.width;
+    Window.canvas.height = image.height;
+    Window.stylus.drawImage(image,0,0);
   };
   var reader = new FileReader();
   reader.onload = function(event){
-    Window.image.src = event.target.result;
+    image.src = event.target.result;
   };
-  reader.readAsDataURL(Window.currentFile);
+  reader.readAsDataURL(passedImage);
+};
+function loadImagetoCanvas(passedImage){
+  var image = new Image();
+  image.onload = function(){
+    Window.stylus.drawImage(image,0,0,Window.canvas.width,Window.canvas.height);
+    saveSnapshot();
+  };
+
+  var reader = new FileReader();
+  reader.onload = function(event){
+    image.src = event.target.result;
+  };
+  reader.readAsDataURL(passedImage);
 };
 function wipeCanvas(){
   Window.stylus.fillStyle = "#FFFFFF";
   Window.stylus.fillRect(0,0,Window.canvas.width,Window.canvas.height)
 }
 function registerMouseMove(e){
-
-  var x = e.clientX - Window.innerWidth*0.1;
-  var y = e.clientY - Window.innerHeight*0.075;
+  var x = e.clientX - Window.canvas.getBoundingClientRect().left;
+  var y = e.clientY - Window.canvas.getBoundingClientRect().top;
   if(isDrawing == 1){
     draw(Window.drawingPen,x,y);
     drawingStatus = 1;
   }
   if(drawingStatus == 1 && isDrawing == 0){
     drawingStatus = 2;
+    if(undoLayer != (CanvasSnapshots.length -1))
+      resetSnapShotArray();
     saveSnapshot();
   }
   if(isDrawing == 0){
@@ -166,29 +197,36 @@ function draw(pen,x,y){
 function undo(){
   if(undoLayer > 0)
     undoLayer -= 1;
-  Window.currentFile = CanvasSnapshots[undoLayer];
-  loadImagetoCanvas();
+  loadSnapshottoCanvas(CanvasSnapshots[undoLayer]);
 };
 function redo(){
   if(undoLayer < CanvasSnapshots.length-1)
     undoLayer += 1;
-  Window.currentFile = CanvasSnapshots[undoLayer];
-  loadImagetoCanvas();
+  loadSnapshottoCanvas(CanvasSnapshots[undoLayer]);
 };
-async function saveSnapshot(){
-  console.log("Saving snapshot of canvas");
-  var image = Window.canvas.toDataURL("image/png");
-  let imageFile = await (fetch(image).then(function(res){return res.arrayBuffer();}).then(function(buf){CanvasSnapshots.push(new File([buf],"test.png",{type:"image/png"})); }));
-  console.log("snapshot saved");
-  if(CanvasSnapshots.length == 0)
-    undoLayer = 0;
-  else{
+function saveSnapshot(){
+  saveCanvastoFile().then(function(file){
+    CanvasSnapshots[CanvasSnapshots.length] = file;
+    console.log("snapshot saved");
+    console.log(CanvasSnapshots);
     undoLayer = CanvasSnapshots.length-1;
-  }
+  });
 };
-async function saveCanvas(){
+function resetSnapShotArray(){
+  console.log("undo layer was lower than latest snapshot, eliminating all snapshots after current layer.");
+  var temp = [];
+  for(i=0;i<=undoLayer;i++)
+    temp[i] = CanvasSnapshots[i];
+  CanvasSnapshots = temp;
+};
+async function saveCanvastoFile(){
   var image = Window.canvas.toDataURL("image/png");
-  let imageFile = await (fetch(image).then(function(res){return res.arrayBuffer();}).then(function(buf){Window.currentFile = new File([buf],"test.png",{type:"image/png"})}));
+  return fetch(image).then(function(res){
+    return res.arrayBuffer();
+  }).then(function(buf){
+    var file = new File([buf],"test.png",{type:"image/png"});
+    return file;
+  });
 };
 function loadLatestSnapShot(){
   if(CanvasSnapshots.length == 0)
@@ -196,9 +234,8 @@ function loadLatestSnapShot(){
   else
     Window.currentFile = CanvasSnapshots[CanvasSnapshots.length - 1];
   if(undoLayer != (CanvasSnapshots.length -1)){
-    console.log("current Snapshot is less than latest Snapshot, loading current snapshot");
+    //console.log("current Snapshot is less than latest Snapshot, loading current snapshot");
     Window.currentFile = CanvasSnapshots[undoLayer];
   }
-  loadImagetoCanvas();
-
+  loadSnapshottoCanvas();
 }
