@@ -52,8 +52,16 @@ function initClient() {
   });
 }
 function updateSigninStatus(isSignedIn) {}
-function handleAuthClick(event) { gapi.auth2.getAuthInstance().signIn(); }
-function handleSignoutClick(event) { gapi.auth2.getAuthInstance().signOut(); }
+function handleAuthClick(event) {
+  gapi.auth2.getAuthInstance().signIn();
+  Window.getElementById("signOutDrive").hidden = false;
+  Window.getElementById("signInDrive").hidden = true;
+}
+function handleSignoutClick(event) {
+  gapi.auth2.getAuthInstance().signOut();
+  Window.getElementById("signOutDrive").hidden = true;
+  Window.getElementById("signInDrive").hidden = false;
+}
 
 //INIT FUNCTION
 function WebPageContentSetup(){
@@ -88,7 +96,7 @@ function WebPageContentSetup(){
     console.log("Webpage setup completed");
 };
 //ALL JS METHODS RELATING TO FILE/API INTERACTION
-async function postFileToDrive(){
+async function saveToDrive(){
   var file = saveCanvastoFile().then(function(file){
     console.log("loading file for upload:"+file);
     var url = new URL("https://www.googleapis.com/upload/drive/v3/files");
