@@ -10,14 +10,20 @@ var Window = "";
 var LoginCredentials;
 var DefaultPen = {
   shape: 'circle',
-  size: 2,
+  size: 4,
   color: "#000000",
 };
 var SquarePen = {
   shape: 'square',
-  size: 2,
+  size: 4,
   color: "#000000",
 };
+var MarkerPen = {
+  shape: 'oval',
+  size: 10,
+  color: "#000000",
+};
+var drawingPen = DefaultPen;
 var CanvasSnapshots = [];
 var acceptedImageTypes = ["image/jpeg","image/gif","image/png"];
 var undoLayer = 0;
@@ -54,8 +60,7 @@ function WebPageContentSetup(){
   Window = this;
   Window.currentFile = '';
   Window.canvas = Window.document.getElementById("drawingCanvas");
-  Window.stylus = canvas.getContext("2d");
-  Window.drawingPen = DefaultPen;
+  Window.stylus = Window.canvas.getContext("2d");
   Window.canvas.width = Window.innerWidth*0.8;
   Window.canvas.height = Window.innerHeight*0.8;
   Window.mouseDown = false;
@@ -112,8 +117,11 @@ function checkFileType(fileType){
 };
 
 // ALL JS METHODS RELATING TO CANVAS AND DRAWING FUNCTIONS
-function setColor(value){
-  Window.drawingPen.color = value;
+function setPenColor(value){
+  drawingPen.color = value;
+};
+function setPenSize(value){
+  drawingPen.size = value;
 };
 function loadSnapshottoCanvas(passedImage){
   image = new Image();
@@ -149,7 +157,7 @@ function registerMouseMove(e){
   var x = e.clientX - Window.canvas.getBoundingClientRect().left;
   var y = e.clientY - Window.canvas.getBoundingClientRect().top;
   if(isDrawing == 1){
-    draw(Window.drawingPen,x,y);
+    draw(drawingPen,x,y);
     drawingStatus = 1;
   }
   if(drawingStatus == 1 && isDrawing == 0){
@@ -169,29 +177,38 @@ function resizeCanvas(e){
     Window.currentFile = loadLatestSnapShot();
 };
 function setPen(value){
-  console.log(value);
   switch(value){
-    case "squarePen":
-      Window.drawingPen = SquarePen;
-    case "cirlcePen":
-      Window.drawingPen = DefaultPen;
+    case 0:
+      drawingPen = DefaultPen;
+      break;
+    case 1:
+      drawingPen = SquarePen;
+      break;
+    case 2:
+      drawingPen = MarkerPen;
+      break;
+    default:
+      drawingPen = DefaultPen;
   }
 }
 function draw(pen,x,y){
+  Window.stylus.fillStyle = pen.color;
   switch(pen.shape){
     case "circle":
-      Window.stylus.fillStyle = pen.color;
       Window.stylus.beginPath();
-      Window.stylus.arc(x,y,Window.drawingPen.size,0,2*Math.PI);
+      Window.stylus.arc(x,y,pen.size,0,2*Math.PI);
       Window.stylus.fill();
       break;
     case "square":
-    console.log("square");
-      Window.stylus.fillStyle = pen.color;
-      Window.stylus.fillRect(x,y,width,height)
+      Window.stylus.fillRect(x,y,pen.size,pen.size);
+      break;
+    case "oval":
+      Window.stylus.beginPath();
+      Window.stylus.ellipse(x,y,pen.size*0.2,pen.size,0,0,2*Math.PI);
+      Window.stylus.fill();
+      break;
     default:
-    console.log("broke");
-
+      console.log("broke");
   }
 };
 function undo(){
