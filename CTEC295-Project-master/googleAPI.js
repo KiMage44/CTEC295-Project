@@ -96,7 +96,7 @@ function WebPageContentSetup(){
     console.log("Webpage setup completed");
 };
 //ALL JS METHODS RELATING TO FILE/API INTERACTION
-async function saveToDrive(){
+async function saveToDrive(formData){
   var file = saveCanvastoFile().then(function(file){
     console.log("loading file for upload:"+file);
     var url = new URL("https://www.googleapis.com/upload/drive/v3/files");
@@ -106,6 +106,56 @@ async function saveToDrive(){
       headers: {'Content-Type':"image/png", 'Content-Length':file.size,
       'Authorization':"Bearer "+googleUserAccount.xc.access_token},
       body: file,
+    });
+    fetchRequest(request);
+  });
+};
+async function saveToDriveMulti(formData, poopoo){
+  var fileType = "";
+  var fileExtension = "";
+  switch(formData.fileType.value){
+    case ".jpg":
+      fileType = "image/jpg";
+      fileExtension = formData.fileType.value;
+    case ".jpeg":
+      fileType = "image/jpeg";
+      fileExtension = formData.fileType.value;
+    case ".png":
+      fileType = "image/png";
+      fileExtension = formData.fileType.value;
+    default:
+      fileType = "image/png";
+      fileExtension = ".png";
+  }
+  var fileName = formData.fileName.value+fileExtension;
+
+
+  var boundaryString = "friskytenders";
+  var frontBoundary = "\r\n--"+boundaryString+"\r\n";
+  var endBoundary = "\r\n--"+boundaryString+"--";
+  var metadata = {
+    name: fileName,
+    mimeType: fileType,
+  };
+
+   saveCanvastoFile().then(function(file){
+     var image = Window.canvas.toDataURL();
+     var multipartRequestBody =
+      "--friskytenders\r\n" +
+      'Content-Type: application/json; charset=UTF-8;\r\n\r\n'+
+      JSON.stringify(metadata)+"\r\n"+
+      "--friskytenders\r\n" +
+      "Content-Type: " + fileType +"\r\nContent-Transfer-Encoding: base64\r\n\r\n"+
+      image +"\r\n"+
+      "--friskytenders--\r\n";
+    console.log("loading file for upload:"+file);
+    var url = new URL("https://www.googleapis.com/upload/drive/v3/files");
+    url.searchParams.append("uploadType","multipart");
+    var request = new Request(url, {
+      method: "POST",
+      headers: {'Content-Type':"multipart/related; boundary="+boundaryString, 'Content-Length':multipartRequestBody.length,
+      'Authorization':"Bearer "+googleUserAccount.xc.access_token},
+      body: multipartRequestBody,
     });
     fetchRequest(request);
   });
@@ -232,8 +282,6 @@ function redo(){
 function saveSnapshot(){
   saveCanvastoFile().then(function(file){
     CanvasSnapshots[CanvasSnapshots.length] = file;
-    console.log("snapshot saved");
-    console.log(CanvasSnapshots);
     undoLayer = CanvasSnapshots.length-1;
   });
 };
@@ -253,14 +301,23 @@ async function saveCanvastoFile(){
     return file;
   });
 };
-function loadLatestSnapShot(){
+function getLatestSnapShot(){
   if(CanvasSnapshots.length == 0)
-    Window.currentFile = CanvasSnapshots[0];
+    return CanvasSnapshots[0];
   else
-    Window.currentFile = CanvasSnapshots[CanvasSnapshots.length - 1];
+    return CanvasSnapshots[CanvasSnapshots.length - 1];
   if(undoLayer != (CanvasSnapshots.length -1)){
     //console.log("current Snapshot is less than latest Snapshot, loading current snapshot");
-    Window.currentFile = CanvasSnapshots[undoLayer];
+    return CanvasSnapshots[undoLayer];
   }
-  loadSnapshottoCanvas();
-}
+};
+function saveMenu(){
+  saveMenu = Window.document.getElementById("miniWindow");
+  console.log("p");
+  Window.document.getElementById("uploadForm").addEventListener("submit",function(event){
+    saveMenu.style.display = "none";
+    event.preventDefault();
+  });
+  saveMenu.childNodes[1].src = Window.canvas.toDataURL("image/png");
+  saveMenu.style.display = "flex";
+};
