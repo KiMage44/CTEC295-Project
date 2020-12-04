@@ -138,11 +138,11 @@
     </nav>
     <div id="miniWindow">
       <img src="" width="100"height="100"/>
-      <form id="uploadForm" onsubmit="saveToDrive(this)">
+      <form id="uploadForm" onsubmit="saveToDriveMulti(this)">
         <ul>
-          <li><label for="fileTypePNG">PNG</label> <input id="fileTypePNG" name="fileType" type="radio" value=".png"></li>
-          <li><label for="fileTypeJPG">JPG</label> <input id="fileTypeJPG" name="fileType" type="radio" value=".jpg"></li>
-          <li><label for="fileTypeJPEG">JPEG</label> <input id="fileTypeJPEG" name="fileType" type="radio"value=".jpeg" ></li>
+          <li><label for="fileTypePNG">PNG</label> <input id="fileTypePNG" name="fileType" type="radio" value="image/png"></li>
+          <li><label for="fileTypeJPG">JPG</label> <input id="fileTypeJPG" name="fileType" type="radio" value="image/jpg"></li>
+          <li><label for="fileTypeJPEG">JPEG</label> <input id="fileTypeJPEG" name="fileType" type="radio"value="image/jpeg" ></li>
         </ul>
         <label for="fileName">File Name:</label> <input id="fileName" name="FileName" type="text">
         <input id="Submit" type="submit">

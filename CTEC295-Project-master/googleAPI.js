@@ -110,54 +110,21 @@ async function saveToDrive(formData){
     fetchRequest(request);
   });
 };
-async function saveToDriveMulti(formData, poopoo){
-  var fileType = "";
-  var fileExtension = "";
-  switch(formData.fileType.value){
-    case ".jpg":
-      fileType = "image/jpg";
-      fileExtension = formData.fileType.value;
-    case ".jpeg":
-      fileType = "image/jpeg";
-      fileExtension = formData.fileType.value;
-    case ".png":
-      fileType = "image/png";
-      fileExtension = formData.fileType.value;
-    default:
-      fileType = "image/png";
-      fileExtension = ".png";
-  }
-  var fileName = formData.fileName.value+fileExtension;
-
-
-  var boundaryString = "friskytenders";
-  var frontBoundary = "\r\n--"+boundaryString+"\r\n";
-  var endBoundary = "\r\n--"+boundaryString+"--";
+async function saveToDriveMulti(formData){
+  var file = getLatestSnapShot();
   var metadata = {
-    name: fileName,
-    mimeType: fileType,
+    name: formData.fileName.value,
+    mimeType: formData.fileType.value,
   };
-
-   saveCanvastoFile().then(function(file){
-     var image = Window.canvas.toDataURL();
-     var multipartRequestBody =
-      "--friskytenders\r\n" +
-      'Content-Type: application/json; charset=UTF-8;\r\n\r\n'+
-      JSON.stringify(metadata)+"\r\n"+
-      "--friskytenders\r\n" +
-      "Content-Type: " + fileType +"\r\nContent-Transfer-Encoding: base64\r\n\r\n"+
-      image +"\r\n"+
-      "--friskytenders--\r\n";
-    console.log("loading file for upload:"+file);
-    var url = new URL("https://www.googleapis.com/upload/drive/v3/files");
-    url.searchParams.append("uploadType","multipart");
-    var request = new Request(url, {
-      method: "POST",
-      headers: {'Content-Type':"multipart/related; boundary="+boundaryString, 'Content-Length':multipartRequestBody.length,
-      'Authorization':"Bearer "+googleUserAccount.xc.access_token},
-      body: multipartRequestBody,
-    });
-    fetchRequest(request);
+  var form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
+  form.append('file', file);
+  fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,kind', {
+    method: 'POST',
+    headers: new Headers({'Authorization': 'Bearer ' + googleUserAccount.xc.access_token}),
+    body: form
+  }).then(function(result){
+     return result.json();
   });
 };
 async function fetchRequest(request){
@@ -231,8 +198,7 @@ function registerMouseMove(e){
 function resizeCanvas(e){
     Window.canvas.width = this.innerWidth*0.8;
     Window.canvas.height = this.innerHeight*0.8;
-    console.log("loading last snapshot");
-    Window.currentFile = loadLatestSnapShot();
+    loadImagetoCanvas(getLatestSnapShot());
 };
 function setPen(value){
   switch(value){
@@ -302,14 +268,8 @@ async function saveCanvastoFile(){
   });
 };
 function getLatestSnapShot(){
-  if(CanvasSnapshots.length == 0)
-    return CanvasSnapshots[0];
-  else
-    return CanvasSnapshots[CanvasSnapshots.length - 1];
-  if(undoLayer != (CanvasSnapshots.length -1)){
-    //console.log("current Snapshot is less than latest Snapshot, loading current snapshot");
-    return CanvasSnapshots[undoLayer];
-  }
+  if(CanvasSnapshots.length > 0)
+    return CanvasSnapshots[CanvasSnapshots.length-1];
 };
 function saveMenu(){
   saveMenu = Window.document.getElementById("miniWindow");
