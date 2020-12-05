@@ -39,6 +39,10 @@ var PrebuiltStylusSettings = [Pencil,Pen,Marker];
 var stylusSettings = PrebuiltStylusSettings[0];
 var CanvasSnapshots = [];
 var acceptedImageTypes = ["image/jpeg","image/jpg","image/gif","image/png"];
+var metadata = {
+  type: "image/png",
+  name: "Draw.NETUpload"
+};
 var undoLayer = 0;
 var drawingStatus = 0; //0= not drawing, 1 = drawing, 2= drawing has completed
 var isDrawing = 0;
@@ -114,40 +118,29 @@ function buildStylusPrebuilts(){
 function setupPCSave(){
   Window.document.getElementById("pcsave").href = canvas.toDataURL("image/png");
 };
-function setupDriveSave(){
-  var fileName = Window.prompt("Please enter a file name.");
-  var imagetype = true;
-  var fileType = "";
-  while(imagetype){
-    fileType = Window.prompt("Please enter a file type. (image/png, image/jpg, or image/jpeg)");
-    console.log(fileType);
-    if(checkFileType(fileType))
-      imagetype = false;
-    else
-      Window.alert("please enter a valid file type and try again.");
-  }
-  var fileInfo = {
-    name: fileName,
-    type: fileType
-  };
-  driveMultipartUpload(fileInfo);
+function setupDriveSave(fileType){
+  Window.document.getElementById("saveWindow").style.display = "none";
+  var fileName = Window.document.getElementById("fileName").value
+  console.log(fileName);
+  setFileName(fileName);
+  setFileType(fileType);
+  driveMultipartUpload();
 };
 function driveBasicUpload(){
-  var fileInfo = {name:"Draw.NETUpload", type: "image/png"};
   var url = new URL("https://www.googleapis.com/upload/drive/v3/files");
   url.searchParams.append("uploadType","media");
   getCanvasData().then(function(data){
-    var file = new File([data],fileInfo.name,{type:fileInfo.type});
+    var file = new File([data],metadata.name,{type:metadata.type});
     var request = new Request(url, {
       method: "POST",
-      headers: {'Content-Type':fileInfo.type, 'Content-Length':file.size,
+      headers: {'Content-Type':metadata.type, 'Content-Length':file.size,
       'Authorization':"Bearer "+googleUserAccount.xc.access_token},
       body: file,
     });
     fetchRequest(request).then(function(e){console.log(e);});
   });
 };
-function driveMultipartUpload(metadata){
+function driveMultipartUpload(){
   var form = new FormData();
   form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
   var url = new URL('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,kind');
@@ -168,7 +161,17 @@ async function fetchRequest(request){
   if(response.status >=200 && response.status < 300) {return response;}
   else {return Promise.reject(new Error(response.statusText));}
 };
-
+function setFileType(value){
+  if(checkFileType(value))
+    metadata.type = value;
+  else {
+    console.error("desired file type is either unsupported or nonexistent, defaulting to image/png");
+    metadata.type = "image/png";
+  }
+};
+function setFileName(value){
+  metadata.name = value;
+}
 function checkFileType(fileType){
   for(i=0; i<acceptedImageTypes.length; i++){
     if(fileType == acceptedImageTypes[i])
@@ -201,7 +204,17 @@ function loadImageOntoCanvas(givenFile){ //loadImagetoCanvas()
   };
   reader.readAsDataURL(givenFile);
 }
+function openSaveMenu(){
+  var popup = Window.document.getElementById("saveWindow");
+  var img = Window.document.getElementById('canvasMiniature');
+  var fileName = Window.document.getElementById('fileName');
+  var button = Window.document.getElementById('submit');
+  img.width = Window.innerWidth*0.8;
+  img.height = Window.innerHeight*0.4;
+  img.src = canvas.toDataURL("image/png");
+  popup.style.display = "block";
 
+};
 //Methods involving interacting with Canvas
 function handleMouseMovement(e){ //registerMouseMove()
   var x = e.clientX - canvas.getBoundingClientRect().left;

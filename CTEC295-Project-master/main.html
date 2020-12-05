@@ -97,7 +97,7 @@
             <ul class="dropdown-menu">
               <!-----Add buttons as needed in this list section keep same format-->
               <li><a id="pcsave" href="#" download><button onclick=setupPCSave()>Save to PC</button></a></li>
-              <li><a href="#"><button onclick="setupDriveSave()">Save to Drive</button></a></li>
+              <li><a href="#"><button onclick="openSaveMenu()">Save to Drive</button></a></li>
             </ul>
           </li>
 
@@ -131,7 +131,19 @@
         </ul>
       </div>
     </nav>
+    <div id="saveWindow">
+      <div id="saveWindowContentPane">
+        <img id="canvasMiniature"/>
+        <ul>
+          <label for="fileName">File Name:</label>
+          <li><input id="fileName" type="text"></input></li>
+          <li id="submit"><a onclick="setupDriveSave('image/png')">Upload As PNG</a></li>
+          <li id="submit"><a onclick="setupDriveSave('image/jpg')">Upload As JPG</a></li>
+          <li id="submit"><a onclick="setupDriveSave('image/jpeg')">Upload As JPEG</a></li>
+      </ul>
 
+      </div>
+    </div>
     <canvas id="drawingCanvas"></canvas>
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad(this)"
