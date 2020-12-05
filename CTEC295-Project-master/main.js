@@ -29,6 +29,12 @@ var Marker = {
   size: 10,
   color: "#000000",
 };
+var ActualShape = {
+  id: 0,
+  size: 30,
+  color:"#000000",
+};
+var stylusIsShape = false;
 var PrebuiltStylusSettings = [Pencil,Pen,Marker];
 var stylusSettings = PrebuiltStylusSettings[0];
 var CanvasSnapshots = [];
@@ -86,9 +92,7 @@ function WebPageContentSetup(value){
       if(checkFileType(file.type)) loadImageOntoCanvas(file);
       else console.error("fileType "+file.type+" not accepted, import aborted.");
   });
-  console.log(stylusSettings);
   buildStylusPrebuilts();
-  console.log(stylusSettings);
   //console.log("Webpage setup completed");
 };
 function buildStylusPrebuilts(){
@@ -99,7 +103,6 @@ function buildStylusPrebuilts(){
     var button = Window.document.createElement('button');
     link.href = "#";
     button.addEventListener("click",function(){setStylus(k);});
-    console.log(button.onclick);
     button.innerHTML = PrebuiltStylusSettings[i].name;
     var stylusLI = Window.document.createElement("li");
     stylusLI.appendChild(link);
@@ -257,20 +260,23 @@ function wipeCanvas(){
 };
 function setStylus(value){
   stylusSettings = PrebuiltStylusSettings[value];
-  console.log("Stylus set to "+stylusSettings.name);
+  stylusIsShape = false;
 };
 function setStylusSize(size){
   stylusSettings.size = size;
 };
-function setStylusShape(shape){
-  stylusSettings.shape = shape;
+function setStylusToShape(value){
+  stylusSettings = ActualShape;
+  stylusSettings.id = value;
+  stylusIsShape = true;
 };
 function setStylusColor(color){
   stylusSettings.color = color;
 };
 function handleCursorDrawing(x,y){
   if(isDrawing == 1){
-    draw(x,y);
+    if(stylusIsShape) drawShape(x,y);
+    else drawCursor(x,y);
     drawingStatus = 1;
   }
   if(drawingStatus == 1 && isDrawing == 0){
@@ -282,8 +288,9 @@ function handleCursorDrawing(x,y){
   if(isDrawing == 0)
     drawingStatus = 0;
 };
-function draw(x,y){
+function drawCursor(x,y){
   stylus.fillStyle = stylusSettings.color;
+  stylus.strokeStyle = stylusSettings.color;
   switch(stylusSettings.shape){
     case 0: //shape to draw is a circle
       drawCircle(x,y);
@@ -298,6 +305,24 @@ function draw(x,y){
       console.log("broke");
   };
 };
+function drawShape(x,y){
+  stylus.fillStyle = stylusSettings.color;
+  stylus.strokeStyle = stylusSettings.color;
+  console.log("set color");
+  switch(stylusSettings.id){
+    case 0:
+      drawStar(x,y);
+      break;
+    case 1:
+      drawHouse(x,y);
+      break;
+    case 2:
+      drawTree(x,y);
+      break;
+    default:
+      console.error("shapeDraw broke.");
+  }
+};
 function drawCircle(x,y){
   stylus.beginPath();
   stylus.arc(x,y,stylusSettings.size,0,2*Math.PI);
@@ -310,4 +335,44 @@ function drawMarker(x,y){
 };
 function drawSquare(x,y){
   stylus.fillRect(x,y,stylusSettings.size,stylusSettings.size);
+};
+function drawStar(x,y){ //draws a start drawing clockwise through each point of five sided star
+
+};
+function drawHouse(x,y){
+  var size = stylusSettings.size;
+  var tipX = x;
+  var tipY = y-size;
+  stylus.beginPath();
+  stylus.moveTo(tipX,tipY);
+  stylus.lineTo(tipX+size,tipY+size);
+  stylus.stroke();
+  stylus.moveTo(tipX+size,tipY+size);
+  stylus.lineTo(tipX+size, tipY+size*2);
+  stylus.stroke();
+  stylus.moveTo(tipX+size, tipY+size*2);
+  stylus.lineTo(tipX-size, tipY+size*2);
+  stylus.stroke();
+  stylus.moveTo(tipX,tipY);
+  stylus.lineTo(tipX-size,tipY+size);
+  stylus.stroke();
+  stylus.moveTo(tipX-size,tipY+size);
+  stylus.lineTo(tipX-size, tipY+size*2);
+  stylus.stroke();
+  stylus.moveTo(tipX-size,tipY+size);
+  stylus.lineTo(tipX+size, tipY+size);
+  stylus.stroke();
+  stylus.moveTo(tipX+(size*0.3),tipY+size*2);
+  stylus.lineTo(tipX+(size*0.3),tipY+size*1.3);
+  stylus.stroke();
+  stylus.moveTo(tipX-(size*0.3),tipY+size*2);
+  stylus.lineTo(tipX-(size*0.3),tipY+size*1.3);
+  stylus.stroke();
+  stylus.moveTo(tipX+(size*0.3),tipY+size*1.3);
+  stylus.lineTo(tipX-(size*0.3),tipY+size*1.3);
+  stylus.stroke();
+  stylus.closePath();
+};
+function drawTree(){
+
 };
