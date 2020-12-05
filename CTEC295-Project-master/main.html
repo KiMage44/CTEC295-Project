@@ -6,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script type='text/javascript' src="googleAPI.js"></script>
+    <script type='text/javascript' src="main.js"></script>
     <!--BootStrap JS and CSS Imports----->
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -22,8 +22,6 @@
         </div>
         <ul class="nav navbar-nav">
 
-
-
            <!---This drowndown menu is for Pencil options--->
           <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" data-toggle="tooltip" title="These are your pencil options!"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -32,9 +30,9 @@
             <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <!-----Add buttons as needed in this list section keep same format-->
-              <li><a href="#"><button onclick="setPen(0)">Pencil</button></a></li>
-              <li><a href="#"><button onclick="setPen(1)">Fat Pencil</button></a></li>
-              <li><a href="#"><button onclick="setPen(2)">Marker</button></a></li>
+              <li><a href="#"><button onclick="setStylus(0)">Pencil</button></a></li>
+              <li><a href="#"><button onclick="setStylus(1)">Pen</button></a></li>
+              <li><a href="#"><button onclick="setStylus(2)">Marker</button></a></li>
             </ul>
           </li>
 
@@ -46,12 +44,12 @@
             <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <!-----Add buttons as needed in this list section keep same format-->
-              <li><a href="#"><button onclick="shapePen(0)">Star</button></a></li>
-              <li><a href="#"><button onclick="shapePen(1)">House</button></a></li>
-              <li><a href="#"><button onclick="shapePen(2)">Tree</button></a></li>
-              <li><a href="#"><button onclick="shapePen(3)">insert</button></a></li>
-              <li><a href="#"><button onclick="shapePen(4)">insert</button></a></li>
-              <li><a href="#"><button onclick="shapePen(5)">insert</button></a></li>
+              <li><a href="#"><button onclick="setStylusShape(0)">Star</button></a></li>
+              <li><a href="#"><button onclick="setStylusShape(1)">House</button></a></li>
+              <li><a href="#"><button onclick="setStylusShape(2)">Tree</button></a></li>
+              <li><a href="#"><button onclick="setStylusShape(3)">insert</button></a></li>
+              <li><a href="#"><button onclick="setStylusShape(4)">insert</button></a></li>
+              <li><a href="#"><button onclick="setStylusShape(5)">insert</button></a></li>
             </ul>
           </li>
 
@@ -65,15 +63,15 @@
             <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <!-----Add buttons as needed in this list section keep same format-->
-              <li><a href="#"><button onclick="setPen()">Circle</button></a></li>
-              <li><a href="#"><button id="blue" onclick="setColor('#0000ff')">Blue</button></a></li>
-              <li><a href="#"><button id="green" onclick="setColor('#008000')">Green</button></a></li>
-              <li><a href="#"><button id="purple" onclick="setColor('#800080')">Purple</button></a></li>
-              <li><a href="#"><button id="orange" onclick="setColor('#FFA500')">Orange</button></a></li>
-              <li><a href="#"><button id="yellow" onclick="setColor('#FFFF00')">Yellow</button></a></li>
-              <li><a href="#"><button id="red" onclick="setColor('#FF0000')">Red</button></a></li>
-              <li><a href="#"><button id="black" onclick="setColor('#000000')">Black</button></a></li>
-              <li><a href="#"><button id="white" onclick="setColor('#ffffff')">White</button></a></li>
+              <li><a href="#"><button id="blue" onclick="setStylusColor('#0000ff')">Blue</button></a></li>
+              <li><a href="#"><button id="green" onclick="setStylusColor('#008000')">Green</button></a></li>
+              <li><a href="#"><button id="purple" onclick="setStylusColor('#800080')">Purple</button></a></li>
+              <li><a href="#"><button id="orange" onclick="setStylusColor('#FFA500')">Orange</button></a></li>
+              <li><a href="#"><button id="yellow" onclick="setStylusColor('#FFFF00')">Yellow</button></a></li>
+              <li><a href="#"><button id="red" onclick="setStylusColor('#FF0000')">Red</button></a></li>
+              <li><a href="#"><button id="black" onclick="setStylusColor('#000000')">Black</button></a></li>
+              <li><a href="#"><button id="white" onclick="setStylusColor('#ffffff')">White</button></a></li>
+              <li><a href="#"><button id="grey" onclick="setStylusColor('#485353')">Grey</button></a></li>
             </ul>
           </li>
 
@@ -101,8 +99,8 @@
             <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <!-----Add buttons as needed in this list section keep same format-->
-              <li><a href="#"><button onclick="saveMenu()">Save to PC</button></a></li>
-              <li><a href="#"><button onclick="saveMenu()">Save to Drive</button></a></li>
+              <li><a id="pcsave" href="#" download><button onclick=setupPCSave()>Save to PC</button></a></li>
+              <li><a href="#"><button onclick="setupDriveSave()">Save to Drive</button></a></li>
             </ul>
           </li>
 
@@ -136,22 +134,14 @@
         </ul>
       </div>
     </nav>
-    <div id="miniWindow">
-      <img src=""/>
-      <form id="uploadForm" onsubmit="saveToDriveMulti(this)">
-        <ul>
-          <li><label for="fileName">File Name:</label> <input id="fileName" name="FileName" type="text"></li>
-          <li><label for="fileTypePNG">PNG</label> <input id="fileTypePNG" name="fileType" type="radio" value="image/png"></li>
-          <li><label for="fileTypeJPG">JPG</label> <input id="fileTypeJPG" name="fileType" type="radio" value="image/jpg"></li>
-          <li><label for="fileTypeJPEG">JPEG</label> <input id="fileTypeJPEG" name="fileType" type="radio"value="image/jpeg" ></li>
-          <li><input id="Submit" type="submit"></li>
-        </ul>
-      </form>
-    </div>
+
     <canvas id="drawingCanvas"></canvas>
     <script async defer src="https://apis.google.com/js/api.js"
-      onload="this.onload=function(){};handleClientLoad('this')"
+      onload="this.onload=function(){};handleClientLoad(this)"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <script type='text/javascript'>
+      WebPageContentSetup(this);
     </script>
   </body>
   </html>

@@ -96,9 +96,8 @@ function WebPageContentSetup(){
     console.log("Webpage setup completed");
 };
 //ALL JS METHODS RELATING TO FILE/API INTERACTION
-async function saveToDrive(formData){
+async function saveToDriveBasic(){
   var file = saveCanvastoFile().then(function(file){
-    console.log("loading file for upload:"+file);
     var url = new URL("https://www.googleapis.com/upload/drive/v3/files");
     url.searchParams.append("uploadType","media");
     var request = new Request(url, {
@@ -108,6 +107,21 @@ async function saveToDrive(formData){
       body: file,
     });
     fetchRequest(request);
+  });
+};
+async function savetoDriveBasic2(fileInfo){
+  getCanvasData().then(function(data){
+    saveCanvastoFile(fileInfo).then(function(file){
+      var url = new URL("https://www.googleapis.com/upload/drive/v3/files");
+      url.searchParams.append("uploadType","media");
+      var request = new Request(url, {
+        method: "POST",
+        headers: {'Content-Type':fileInfo.type, 'Content-Length':file.size,
+        'Authorization':"Bearer "+googleUserAccount.xc.access_token},
+        body: file,
+      });
+      return request;
+    }).then(function(request){fetchRequest})
   });
 };
 async function saveToDriveMulti(formData){
@@ -252,25 +266,12 @@ function saveSnapshot(){
   });
 };
 function resetSnapShotArray(){
-  console.log("undo layer was lower than latest snapshot, eliminating all snapshots after current layer.");
   var temp = [];
   for(i=0;i<=undoLayer;i++)
     temp[i] = CanvasSnapshots[i];
   CanvasSnapshots = temp;
 };
-async function saveCanvastoFile(){
-  var image = Window.canvas.toDataURL("image/png");
-  return fetch(image).then(function(res){
-    return res.arrayBuffer();
-  }).then(function(buf){
-    var file = new File([buf],"test.png",{type:"image/png"});
-    return file;
-  });
-};
-function getLatestSnapShot(){
-  if(CanvasSnapshots.length > 0)
-    return CanvasSnapshots[CanvasSnapshots.length-1];
-};
+
 function saveMenu(){
   saveMenu = Window.document.getElementById("miniWindow");
   console.log("p");
@@ -280,4 +281,19 @@ function saveMenu(){
   });
   saveMenu.childNodes[1].src = Window.canvas.toDataURL("image/png");
   saveMenu.style.display = "flex";
+};
+
+function getCanvasData(){
+  var image = Window.canvas.toDataURL("image/png");
+  return fetch(image).then(function(res){
+    return res.arrayBuffer();
+  }).then(function(buf){
+    return buf;
+  });
+};
+function saveCanvastoFile(fileInfo){
+  getCanvasData().then(function(data){
+    var file = new File([buf],fileInfo.name,{type:fileInfo.type});
+    return file;
+  });
 };
