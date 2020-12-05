@@ -104,13 +104,11 @@ function buildStylusPrebuilts(){
   for(i=0; i<PrebuiltStylusSettings.length; i++){
     let k = i;
     var link = Window.document.createElement('a');
-    var button = Window.document.createElement('button');
     link.href = "#";
-    button.addEventListener("click",function(){setStylus(k);});
-    button.innerHTML = PrebuiltStylusSettings[i].name;
+    link.addEventListener("click",function(){setStylus(k);});
+    link.innerHTML = PrebuiltStylusSettings[i].name;
     var stylusLI = Window.document.createElement("li");
     stylusLI.appendChild(link);
-    stylusLI.appendChild(button);
     stylusUL.appendChild(stylusLI);
   }
 };

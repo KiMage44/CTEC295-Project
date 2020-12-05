@@ -33,7 +33,7 @@ body{
 }
 #saveWindowContentPane{
   width:85%;
-  background-color: grey;
+  background-color: black;
   margin: auto;
 }
 
@@ -56,14 +56,18 @@ body{
   display: inline-block;
   padding: 0;
   text-align: center;
+  color: grey;
 
 }
 #saveWindowContentPane li input{
   width:100%;
+  color: white;
 }
-#saveWindowContentPane li label{
-  margin-left: 5%;
-  width:100%;
+#saveWindowContentPane label{
+  color: white;
+}
+#saveWindowContentPane li a{
+  color: white;
 }
 #submit {
   width: 100%;
