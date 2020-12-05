@@ -12,16 +12,19 @@ var stylus = "";
 var mouseDown = false;
 var LoginCredentials;
 var Pencil = {
+  name: "Pencil",
   shape: 0, //circle
   size: 4,
   color: "#485353",
 };
 var Pen = {
+  name: "Pen",
   shape: 1,//square
   size: 4,
   color: "#000000",
 };
 var Marker = {
+  name: "Marker",
   shape: 2, //marker
   size: 10,
   color: "#000000",
@@ -83,7 +86,26 @@ function WebPageContentSetup(value){
       if(checkFileType(file.type)) loadImageOntoCanvas(file);
       else console.error("fileType "+file.type+" not accepted, import aborted.");
   });
+  console.log(stylusSettings);
+  buildStylusPrebuilts();
+  console.log(stylusSettings);
   //console.log("Webpage setup completed");
+};
+function buildStylusPrebuilts(){
+  stylusUL = Window.document.getElementById("prebuiltstylus");
+  for(i=0; i<PrebuiltStylusSettings.length; i++){
+    let k = i;
+    var link = Window.document.createElement('a');
+    var button = Window.document.createElement('button');
+    link.href = "#";
+    button.addEventListener("click",function(){setStylus(k);});
+    console.log(button.onclick);
+    button.innerHTML = PrebuiltStylusSettings[i].name;
+    var stylusLI = Window.document.createElement("li");
+    stylusLI.appendChild(link);
+    stylusLI.appendChild(button);
+    stylusUL.appendChild(stylusLI);
+  }
 };
 //ALL JS METHODS RELATING TO FILE/API INTERACTION
 function setupPCSave(){
@@ -235,6 +257,7 @@ function wipeCanvas(){
 };
 function setStylus(value){
   stylusSettings = PrebuiltStylusSettings[value];
+  console.log("Stylus set to "+stylusSettings.name);
 };
 function setStylusSize(size){
   stylusSettings.size = size;
