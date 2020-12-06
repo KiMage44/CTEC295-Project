@@ -82,10 +82,16 @@ function WebPageContentSetup(value){
   stylus = canvas.getContext("2d");
   canvas.width = Window.innerWidth*0.8;
   canvas.height = Window.innerHeight*0.8;
-  wipeCanvas();
+  //wipeCanvas();
 
   //Event Listeners for webpage
   Window.addEventListener("resize",function(e){handleCanvasResize(e);});//resizeCanvas(e);
+  Window.document.getElementById('PenColor').addEventListener('change', function(e){
+    setStylusColor(document.getElementById('PenColor').value);
+	}, false);
+  Window.document.getElementById('stylusWidth').addEventListener('change', function(e){
+    setStylusSize(document.getElementById('stylusWidth').value);
+	}, false);
   Window.document.getElementById("drawingCanvas").addEventListener("mousemove", function(e){handleMouseMovement(e);});
   Window.document.getElementById("drawingCanvas").addEventListener("mousedown",function(e){isDrawing = 1;});
   Window.document.getElementById("drawingCanvas").addEventListener("mouseup",function(e){isDrawing = 0;});
@@ -236,12 +242,6 @@ function saveCanvasSnapshot(){ //saveSnapshot()
     undoLayer = CanvasSnapshots.length-1;
   });
 };
-async function saveCanvastoFile(fileInfo){
-  getCanvasData().then(function(data){
-    var file = new File([data],fileInfo.name,{type:fileInfo.type});
-    return file;
-  });
-};
 function buildFileFromSnapshot(snapshot){
   var file = new File([snapshot],"snapshot",{type: "image/png"});
   return file;
@@ -271,10 +271,14 @@ function wipeCanvas(){
 };
 function setStylus(value){
   stylusSettings = PrebuiltStylusSettings[value];
+  setStylusSize(stylusSettings.size);
+  setStylusColor(stylusSettings.color);
   stylusIsShape = false;
 };
 function setStylusSize(size){
+  console.log("set stylus width"+size);
   stylusSettings.size = size;
+  Window.document.getElementById('stylusWidth').value = size;
 };
 function setStylusToShape(value){
   stylusSettings = ActualShape;
@@ -282,6 +286,7 @@ function setStylusToShape(value){
   stylusIsShape = true;
 };
 function setStylusColor(color){
+  Window.document.getElementById("PenColor").value = color;
   stylusSettings.color = color;
 };
 function handleCursorDrawing(x,y){
